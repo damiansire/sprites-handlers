@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width;initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+    const canvas = document.getElementById('canvas')
+    const context = canvas.getContext('2d')
+    const imageObj = new Image();
+    imageObj.src = "./examples/tile015.png";
+
+    imageObj.onload = function () {
+        context.drawImage(imageObj, 0, 0);
+        let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        //Search for top
+        checkPixelsEqualityRow(imageData, 0)
+        /*
+        for (let x = 0; x < 100; x++) {
+            for (let y = 0; y < imageData.width; y++) {
+                setPixel(context, x, y);
+            }
+        }
+        */
+
+
+    }
+
+    function setPixel(context, x, y) {
+        let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        let pixels = imageData.data;
+        const pixelIndex = getPixelIndex(x, y)
+        pixels[pixelIndex] = 256;
+        pixels[pixelIndex + 1] = 0;
+        pixels[pixelIndex + 2] = 0;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.putImageData(imageData, 0, 0);
+    }
+
+
+    function setPixelByIndex(context, pixelIndex) {
+        let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        let pixels = imageData.data;
+        pixels[pixelIndex] = 256;
+        pixels[pixelIndex + 1] = 0;
+        pixels[pixelIndex + 2] = 0;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.putImageData(imageData, 0, 0);
+    }
+
+    function getPixelIndex(x, y) {
+        return x * canvas.width + y * 4
+    }
+
+    function checkPixelsEqualityRow(imageData, x) {
+        for (let y = 1; y < imageData.width; y++) {
+            const pixelBefore = getPixelIndex(x, y - 1)
+            const currentPixel = getPixelIndex(x, y)
+            if (!comparePixels(imageData, pixelBefore, currentPixel)) {
+
+            }
+
+        }
+    }
+
+    function comparePixels(imageData, index1, index2) {
+        let pixels = imageData.data;
+        const pixelData = getRgbFromPixelIndex(pixels, index1).r
+        console.log(pixelData)
+        if (pixelData === 0) {
+            console.log(pixelData, index1)
+            setPixelByIndex(context, index1)
+        }
+
+        return pixels[index1] === pixels[index2] &&
+            pixels[index1 + 1] === pixels[index2 + 1] &&
+            pixels[index1 + 2] === pixels[index2 + 2]
+    }
+
+    function getRgbFromPixelIndex(pixels, index) {
+        return {
+            r: pixels[index],
+            g: pixels[index + 1],
+            b: pixels[index + 2]
+        }
+    }
+
+</script>
+
+
+</html>
