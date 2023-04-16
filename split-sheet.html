@@ -10,17 +10,26 @@
 
 <body>
     <section>
-        <h1>Resultado</h1>
-        <div class="sprites-container">
-
+        <canvas id="canvas"></canvas>
+    </section>
+    <section class="options">
+        <div class="option-field">
+            <label for="columns">Columns:</label>
+            <input id="columns" name="columns" type="number" placeholder="Columns">
+        </div>
+        <div class="option-field">
+            <label for="rows">Rows:</label>
+            <input id="rows" name="rows" type="number" placeholder="Rows">
+        </div>
+        <div class="option-field">
+            <button>Split</button>
         </div>
     </section>
-    <div>
-        <canvas id="canvas"></canvas>
-    </div>
-    <div>
-        <button>Split</button>
-    </div>
+    <section>
+        <h1>Resultado</h1>
+        <div class="sprites-container">
+        </div>
+    </section>
 
 </body>
 
@@ -59,6 +68,7 @@
                     y: row * gapRows,
                     width: gapColumns,
                     height: gapRows,
+                    index: row * columns + col + 1
                 })
             }
         }
@@ -75,29 +85,30 @@
         for (const sprite of sprites) {
             context.rect(sprite.x, sprite.y, sprite.width, sprite.height);
             context.stroke()
-            debugger
         }
     }
 
     function createSprite(sprite) {
-        const newCanvas = createDomSpriteSlot()
+        const newCanvas = createDomSpriteSlot(sprite.width, sprite.height, sprite.index)
         const selectCanvasData = context.getImageData(sprite.x, sprite.y, sprite.width, sprite.height);
         newCanvas.getContext('2d').putImageData(selectCanvasData, 0, 0);
     }
 
-    function createDomSpriteSlot() {
+    function createDomSpriteSlot(width, height, number) {
         //Sprite container
         const spriteContainer = document.createElement("div")
         spriteContainer.className = "sprite-container";
         const resultSections = document.getElementsByClassName("sprites-container")[0]
         resultSections.appendChild(spriteContainer);
         //Sprite title
-        const spriteTitle = document.createElement("h1");
-        spriteTitle.appendChild(document.createTextNode("Imagen 1"));
+        const spriteTitle = document.createElement("div");
+        spriteTitle.appendChild(document.createTextNode(`Imagen ${number}`));
         spriteContainer.appendChild(spriteTitle)
         //Canvas
-        const spriteCanva = document.createElement("CANVAS");
+        const spriteCanva = document.createElement("canvas");
         spriteContainer.appendChild(spriteCanva)
+        spriteCanva.width = width;
+        spriteCanva.height = height;
         return spriteCanva;
     }
 </script>
@@ -105,10 +116,34 @@
 <style>
     .sprites-container {
         display: flex;
+        flex-wrap: wrap;
     }
 
     .sprite-container {
-        border: 1px solid red;
+        text-align: center;
+        padding: 2px;
+    }
+
+    .option-field {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        margin-left: 5px;
+    }
+
+    .option-field button {
+        padding: 13px;
+        position: absolute;
+        bottom: 0;
+    }
+
+    input {
+        padding: 10px;
+        font-size: 1.2em;
+    }
+
+    .options {
+        display: flex;
     }
 </style>
 
