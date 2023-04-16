@@ -9,34 +9,36 @@
 </head>
 
 <body>
-    <div>
-        <canvas id="canvas"></canvas>
-    </div>
-    <div>
-        <button>Split</button>
-    </div>
     <section>
         <h1>Resultado</h1>
         <div class="sprites-container">
 
         </div>
     </section>
+    <div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div>
+        <button>Split</button>
+    </div>
+
 </body>
 
 <script>
     const canvas = document.getElementById('canvas')
     const context = canvas.getContext('2d')
     const imageObj = new Image();
-    imageObj.src = "./examples/spritesheet-4x4.png";
+    imageObj.src = "./examples/sprites-multiples-small.png";
 
     imageObj.addEventListener("load", () => {
         canvas.width = imageObj.width;
         canvas.height = imageObj.height;
         context.drawImage(imageObj, 0, 0);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const sprites = generateSpritesUniformGrid(4, 4, imageData);
+        const sprites = generateSpritesUniformGrid(5, 7, imageData);
         drawSpritesLimit(sprites)
-
+        generateIndividualSprites(sprites)
+        console.log(sprites)
     })
 
     /**
@@ -53,44 +55,33 @@
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < columns; col++) {
                 sprites.push({
-                    x: row * gapColumns,
-                    y: col * gapRows,
+                    x: col * gapColumns,
+                    y: row * gapRows,
                     width: gapColumns,
                     height: gapRows,
                 })
             }
         }
-        console.log(sprites)
         return sprites
+    }
+
+    function generateIndividualSprites(sprites) {
+        for (let sprite of sprites) {
+            createSprite(sprite)
+        }
     }
 
     function drawSpritesLimit(sprites) {
         for (const sprite of sprites) {
             context.rect(sprite.x, sprite.y, sprite.width, sprite.height);
             context.stroke()
+            debugger
         }
     }
-    /*
-    function generateGrid(rows, columns, imageData) {
-        //Horizontal
-        const gapRows = imageData.height / rows;
-        for (let index = 0; index < rows; index++) {
-            context.moveTo(0, index * gapRows);
-            context.lineTo(imageData.width, index * gapRows);
-        }
 
-        //Vertical
-        const gapColumns = imageData.width / columns;
-        for (let index = 0; index < columns; index++) {
-            context.moveTo(index * gapColumns, 0);
-            context.lineTo(index * gapColumns, imageData.height);
-        }
-        context.stroke();
-    }
-*/
-    function createSprite(x1, y1, x2, y2) {
+    function createSprite(sprite) {
         const newCanvas = createDomSpriteSlot()
-        const selectCanvasData = context.getImageData(x1, y1, x2, y2);
+        const selectCanvasData = context.getImageData(sprite.x, sprite.y, sprite.width, sprite.height);
         newCanvas.getContext('2d').putImageData(selectCanvasData, 0, 0);
     }
 
