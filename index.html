@@ -9,28 +9,25 @@
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
+    <div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <div>
+        <button>Show axis</button>
+    </div>
 </body>
 <script>
     const canvas = document.getElementById('canvas')
     const context = canvas.getContext('2d')
     const imageObj = new Image();
-    imageObj.src = "./examples/tile015.png";
+    imageObj.src = "./examples/spritesheet-horizontal.png";
 
     imageObj.onload = function () {
+        canvas.width = imageObj.width;
+        canvas.height = imageObj.height;
         context.drawImage(imageObj, 0, 0);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        //Search for top
-        checkPixelsEqualityRow(imageData, 0)
-        /*
-        for (let x = 0; x < 100; x++) {
-            for (let y = 0; y < imageData.width; y++) {
-                setPixel(context, x, y);
-            }
-        }
-        */
-
-
+        drawGrid(1, 16, imageData);
     }
 
     function setPixel(context, x, y) {
@@ -43,7 +40,6 @@
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.putImageData(imageData, 0, 0);
     }
-
 
     function setPixelByIndex(context, pixelIndex) {
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -92,7 +88,37 @@
         }
     }
 
-</script>
+    /**
+     * Draw grid in the imagen
+     * @param {rows} amount of rows
+     * @param {columns} amount of columns
+     * @param {imageData} imagen to apply the grid
+     * @return {void}
+     */
+    function drawGrid(rows, columns, imageData) {
+        debugger
+        //Horizontal
+        const gapRows = imageData.height / rows;
+        for (let index = 0; index < rows; index++) {
+            context.moveTo(0, index * gapRows);
+            context.lineTo(imageData.width, index * gapRows);
+        }
 
+        const gapColumns = imageData.width / columns;
+        for (let index = 0; index < columns; index++) {
+            context.moveTo(index * gapColumns, 0);
+            context.lineTo(index * gapColumns, imageData.height);
+        }
+        context.stroke();
+    }
+
+    function setLineOwn() {
+        for (let x = 0; x < 100; x++) {
+            for (let y = 0; y < imageData.width; y++) {
+                setPixel(context, x, y);
+            }
+        }
+    }
+</script>
 
 </html>
