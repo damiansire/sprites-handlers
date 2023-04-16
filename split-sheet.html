@@ -13,7 +13,7 @@
         <canvas id="canvas" class="principal-preview-canvas"></canvas>
     </section>
     <section class="options">
-        <div style="display: flex;">
+        <div class="sprite-grid">
             <div class="option-field">
                 <label for="columns">Columns:</label>
                 <input id="columns" name="columns" type="number" placeholder="Columns">
@@ -22,8 +22,8 @@
                 <label for="rows">Rows:</label>
                 <input id="rows" name="rows" type="number" placeholder="Rows">
             </div>
-            <div class="option-field">
-                <button>Split</button>
+            <div class="option-field button-split" style="flex-grow: 1">
+                <button id="split-sheet-button">Split</button>
             </div>
         </div>
     </section>
@@ -39,16 +39,18 @@
     const context = canvas.getContext('2d')
     const imageObj = new Image();
     imageObj.src = "./examples/sprites-multiples-small.png";
-
+    let sprites = []
     imageObj.addEventListener("load", () => {
         canvas.width = imageObj.width;
         canvas.height = imageObj.height;
         context.drawImage(imageObj, 0, 0);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const sprites = generateSpritesUniformGrid(5, 7, imageData);
+        sprites = generateSpritesUniformGrid(5, 7, imageData);
         drawSpritesLimit(sprites)
+    })
+
+    document.getElementById("split-sheet-button").addEventListener("click", () => {
         generateIndividualSprites(sprites)
-        console.log(sprites)
     })
 
     /**
@@ -112,6 +114,8 @@
         spriteCanva.height = height;
         return spriteCanva;
     }
+
+
 </script>
 
 <style>
@@ -120,24 +124,29 @@
     }
 
     body {
+        overflow: hidden;
         display: grid;
         margin: 0;
         height: 100%;
         padding: 30px;
         box-sizing: border-box;
-        grid-template-columns: 2fr 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: 2fr 1fr;
         grid-template-areas: "preview options"
-            "preview individual-sprites";
+            "individual-sprites individual-sprites"
+            "individual-sprites individual-sprites";
     }
 
     .preview {
         grid-area: preview;
         align-self: center;
+        height: 100%;
+        text-align: center;
     }
 
     .individual-sprites {
         grid-area: individual-sprites;
+        overflow: auto;
     }
 
     .options {
@@ -156,6 +165,7 @@
     }
 
     .option-field {
+        flex-grow: 2;
         display: flex;
         flex-direction: column;
         margin-left: 5px;
@@ -172,8 +182,31 @@
 
     .principal-preview-canvas {
         box-sizing: border-box;
-        width: 100%;
         padding: 0 30px 0 0;
+        height: 100%;
+    }
+
+    .options .sprite-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media (max-width: 1400px) {
+        body {
+            grid-template-areas: "preview preview"
+                "options options"
+                "individual-sprites individual-sprites";
+            grid-template-rows: 1fr auto 1fr;
+        }
+
+
+        .options .sprite-grid {
+            flex-direction: row;
+        }
+
+        .option-field.button-split {
+            align-self: end;
+        }
     }
 </style>
 
