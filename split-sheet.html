@@ -13,7 +13,7 @@
         <canvas id="canvas"></canvas>
     </div>
     <div>
-        <button>Show axis</button>
+        <button>Split</button>
     </div>
     <section>
         <h1>Resultado</h1>
@@ -27,16 +27,16 @@
     const canvas = document.getElementById('canvas')
     const context = canvas.getContext('2d')
     const imageObj = new Image();
-    imageObj.src = "./examples/spritesheet-horizontal.png";
+    imageObj.src = "./examples/spritesheet-4x4.png";
 
     imageObj.addEventListener("load", () => {
         canvas.width = imageObj.width;
         canvas.height = imageObj.height;
         context.drawImage(imageObj, 0, 0);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        drawGrid(1, 16, imageData);
-        createSprite(0, 0, 100, 100)
-        createSprite(100, 0, 100, 200)
+        const sprites = generateSpritesUniformGrid(4, 4, imageData);
+        drawSpritesLimit(sprites)
+
     })
 
     /**
@@ -46,7 +46,32 @@
      * @param {imageData} imagen to apply the grid
      * @return {void}
      */
-    function drawGrid(rows, columns, imageData) {
+    function generateSpritesUniformGrid(rows, columns, imageData) {
+        const sprites = []
+        const gapRows = imageData.height / rows;
+        const gapColumns = imageData.width / columns;
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < columns; col++) {
+                sprites.push({
+                    x: row * gapColumns,
+                    y: col * gapRows,
+                    width: gapColumns,
+                    height: gapRows,
+                })
+            }
+        }
+        console.log(sprites)
+        return sprites
+    }
+
+    function drawSpritesLimit(sprites) {
+        for (const sprite of sprites) {
+            context.rect(sprite.x, sprite.y, sprite.width, sprite.height);
+            context.stroke()
+        }
+    }
+    /*
+    function generateGrid(rows, columns, imageData) {
         //Horizontal
         const gapRows = imageData.height / rows;
         for (let index = 0; index < rows; index++) {
@@ -62,7 +87,7 @@
         }
         context.stroke();
     }
-
+*/
     function createSprite(x1, y1, x2, y2) {
         const newCanvas = createDomSpriteSlot()
         const selectCanvasData = context.getImageData(x1, y1, x2, y2);
@@ -82,7 +107,6 @@
         //Canvas
         const spriteCanva = document.createElement("CANVAS");
         spriteContainer.appendChild(spriteCanva)
-
         return spriteCanva;
     }
 </script>
