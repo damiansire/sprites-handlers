@@ -40,14 +40,41 @@
     const imageObj = new Image();
     imageObj.src = "./examples/sprites-multiples-small.png";
     let sprites = []
+
     imageObj.addEventListener("load", () => {
         canvas.width = imageObj.width;
         canvas.height = imageObj.height;
+        reGenerateGrid(1, 1)
+    })
+
+    const columnsInput = document.querySelector("#columns");
+    columnsInput.addEventListener("input", function () {
+        const { rows, columns } = getOptionsData()
+        reGenerateGrid(rows, columns)
+    });
+
+    const rowsInput = document.querySelector("#rows");
+    rowsInput.addEventListener("input", function () {
+        const { rows, columns } = getOptionsData()
+        reGenerateGrid(rows, columns)
+
+    });
+
+    function getOptionsData() {
+        return {
+            columns: columnsInput.valueAsNumber,
+            rows: rowsInput.valueAsNumber
+        }
+    }
+
+    function reGenerateGrid(rows, columns) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(imageObj, 0, 0);
         let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        sprites = generateSpritesUniformGrid(5, 7, imageData);
+        sprites = generateSpritesUniformGrid(rows, columns, imageData);
         drawSpritesLimit(sprites)
-    })
+    }
+
 
     document.getElementById("split-sheet-button").addEventListener("click", () => {
         generateIndividualSprites(sprites)
@@ -85,10 +112,12 @@
     }
 
     function drawSpritesLimit(sprites) {
+        context.beginPath();
         for (const sprite of sprites) {
             context.rect(sprite.x, sprite.y, sprite.width, sprite.height);
-            context.stroke()
         }
+        context.stroke()
+        context.closePath();
     }
 
     function createSprite(sprite) {
