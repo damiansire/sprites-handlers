@@ -9,28 +9,29 @@
 </head>
 
 <body>
-    <section>
-        <canvas id="canvas"></canvas>
+    <section class="preview">
+        <canvas id="canvas" class="principal-preview-canvas"></canvas>
     </section>
     <section class="options">
-        <div class="option-field">
-            <label for="columns">Columns:</label>
-            <input id="columns" name="columns" type="number" placeholder="Columns">
-        </div>
-        <div class="option-field">
-            <label for="rows">Rows:</label>
-            <input id="rows" name="rows" type="number" placeholder="Rows">
-        </div>
-        <div class="option-field">
-            <button>Split</button>
+        <div style="display: flex;">
+            <div class="option-field">
+                <label for="columns">Columns:</label>
+                <input id="columns" name="columns" type="number" placeholder="Columns">
+            </div>
+            <div class="option-field">
+                <label for="rows">Rows:</label>
+                <input id="rows" name="rows" type="number" placeholder="Rows">
+            </div>
+            <div class="option-field">
+                <button>Split</button>
+            </div>
         </div>
     </section>
-    <section>
+    <section class="individual-sprites">
         <h1>Resultado</h1>
         <div class="sprites-container">
         </div>
     </section>
-
 </body>
 
 <script>
@@ -114,6 +115,36 @@
 </script>
 
 <style>
+    html {
+        height: 100%;
+    }
+
+    body {
+        display: grid;
+        margin: 0;
+        height: 100%;
+        padding: 30px;
+        box-sizing: border-box;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas: "preview options"
+            "preview individual-sprites";
+    }
+
+    .preview {
+        grid-area: preview;
+        align-self: center;
+    }
+
+    .individual-sprites {
+        grid-area: individual-sprites;
+    }
+
+    .options {
+        grid-area: options;
+        display: flex;
+    }
+
     .sprites-container {
         display: flex;
         flex-wrap: wrap;
@@ -127,14 +158,11 @@
     .option-field {
         display: flex;
         flex-direction: column;
-        position: relative;
         margin-left: 5px;
     }
 
     .option-field button {
         padding: 13px;
-        position: absolute;
-        bottom: 0;
     }
 
     input {
@@ -142,8 +170,10 @@
         font-size: 1.2em;
     }
 
-    .options {
-        display: flex;
+    .principal-preview-canvas {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 30px 0 0;
     }
 </style>
 
