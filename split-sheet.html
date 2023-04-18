@@ -28,6 +28,7 @@
         </div>
     </section>
     <section class="individual-sprites">
+        <input type="file" id="image-upload">
         <h1>Resultado</h1>
         <div class="sprites-container">
         </div>
@@ -35,6 +36,15 @@
 </body>
 
 <script>
+    const uploadImageInput = document.getElementById("image-upload");
+    uploadImageInput.addEventListener("change", () => {
+        if (uploadImageInput.files.length > 0) {
+            let file = uploadImageInput.files[0];
+            if (file.type) {
+                debugger
+            }
+        }
+    })
     const canvas = document.getElementById('canvas')
     const context = canvas.getContext('2d')
     const imageObj = new Image();
@@ -161,7 +171,6 @@
         grid-template-columns: 3fr 1fr;
         grid-template-rows: 2fr 1fr;
         grid-template-areas: "preview options"
-            "individual-sprites individual-sprites"
             "individual-sprites individual-sprites";
     }
 
